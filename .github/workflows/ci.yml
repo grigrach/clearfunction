@@ -1,0 +1,57 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1) Скачиваем код
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2) Ставим Node.js (20-я LTS) и кешируем npm
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # 3) Устанавливаем зависимости по lock-файлу
+      - name: Install deps
+        run: npm ci
+
+      # 4) Запускаем тесты с покрытием (100% пороги заданы в package.json)
+      - name: Test with coverage
+        run: npm test
+
+      # 5) Загружаем HTML-отчёт как артефакт
+      - name: Upload coverage HTML
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-html
+          path: coverage/lcov-report
+          if-no-files-found: error
+
+      # 6) Добавляем сводку покрытия в Summary джоба
+      - name: Add coverage summary to job
+        run: |
+          node - <<'NODE'
+          const fs = require('fs');
+          const p = 'coverage/coverage-summary.json';
+          const s = JSON.parse(fs.readFileSync(p, 'utf8'));
+          const g = s.total;
+          const out = [
+            '### Coverage summary',
+            `- Lines: ${g.lines.pct}%`,
+            `- Statements: ${g.statements.pct}%`,
+            `- Functions: ${g.functions.pct}%`,
+            `- Branches: ${g.branches.pct}%`,
+            '',
+            'Полный HTML-отчёт доступен во вкладке **Artifacts** → coverage-html.'
+          ].join('\n');
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, out);
+          NODE
