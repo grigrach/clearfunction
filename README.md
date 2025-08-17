@@ -1,6 +1,6 @@
 # Health Indicator
 
-![CI](https://github.com/<OWNER>/<REPO>/actions/workflows/ci.yml/badge.svg?branch=main)
+![CI](https://github.com/grigrach/clearfunction/actions/workflows/ci.yml/badge.svg?branch=main)
 
 Учебный проект на JavaScript с использованием **чистых функций**, Jest и GitHub Actions.  
 Функция определяет состояние здоровья персонажа по числовому полю `health`:
@@ -14,7 +14,7 @@
 Склонируйте репозиторий и установите зависимости:
 
 ```bash
-git clone https://github.com/<OWNER>/<REPO>.git
+git clone https://github.com/grigrach/clearfunction.git
 cd <REPO>
 npm ci
 ```
@@ -62,5 +62,4 @@ health-indicator/
 
 ---
 
-✍️ Замените `<OWNER>` и `<REPO>` в ссылке бейджа и в инструкциях на ваш GitHub логин и имя репозитория.  
-После первого пуша во вкладке **Actions** вы увидите, как работает CI.
+
